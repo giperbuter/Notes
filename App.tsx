@@ -1,11 +1,20 @@
+import React from 'react'
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+
+const Greet = (props) => {
+  return (
+    <View>
+      <Text>Hi! my name is {props.name}!</Text>
+    </View>
+  );
+}
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <Greet name="Yotam"/>
+      <Greet name="Noam"/>
     </View>
   );
 }
