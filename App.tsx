@@ -1,11 +1,25 @@
-import React from 'react'
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, {useState} from 'react'
+import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Greet = (props) => {
+  const [dark, setDark] = useState(false)
   return (
     <View>
-      <Text>Hi! my name is {props.name}!</Text>
+      <Text style={dark ? styles.darkText : styles.lightText}>Hi! my name is {props.name}!</Text>
+      <Button
+        onPress={() => {
+          setDark(true);
+        }}
+        title="set to dark"
+      />
+      <Button
+        onPress={() => {
+          setDark(false);
+        }}
+        title="set to light"
+      />
     </View>
   );
 }
@@ -13,8 +27,8 @@ const Greet = (props) => {
 export default function App() {
   return (
     <View style={styles.container}>
-      <Greet name="Yotam"/>
-      <Greet name="Noam"/>
+      <Greet name=""/>
+      <Greet name="vanussy"/>
     </View>
   );
 }
@@ -26,4 +40,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  lightText: {
+    textAlign: 'center',
+    color: 'grey'
+  },
+  darkText: {
+    textAlign: 'center',
+    color: 'black'
+  }
 });
