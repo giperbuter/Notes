@@ -9,7 +9,7 @@ let Note = (props) => {
       </Text>
       {Object.entries(props.fields).map(([key, value]) => (
         // <View key={key}>
-        <React.Fragment>
+        <React.Fragment key={key}>
           <Text>{key}</Text>
           <Text>{value}</Text>
         </React.Fragment>
