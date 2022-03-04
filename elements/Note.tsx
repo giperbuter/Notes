@@ -8,10 +8,8 @@ let Note = (props) => {
         {props.title}
       </Text>
       {Object.entries(props.fields).map(([key, value]) => (
-        // <View key={key}>
         <React.Fragment key={key}>
-          <Text>{key}</Text>
-          <Text>{value}</Text>
+          <Text style={styles.noteField}>{key + ' : ' + value}</Text>
         </React.Fragment>
       ))}
     </View>
@@ -22,12 +20,20 @@ module.exports = Note;
 
 const styles = StyleSheet.create({
   note: {
-    width: 300,
-    margin: 10
+    minWidth: 200,
+    margin: 3,
+    backgroundColor: 'rgba(230, 230, 230, .1)',
+    padding: 10,
+    borderRadius: 10,
   },
   noteTitle: {
+    fontSize: 20,
+    fontWeight: '200',
+    letterSpacing: 1,
+    marginBottom: 3,
   },
   noteField: {
+    fontSize: 17,
+    fontWeight: '300',
   }
 });
-
