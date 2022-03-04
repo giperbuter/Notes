@@ -22,18 +22,19 @@ const styles = StyleSheet.create({
   note: {
     minWidth: 200,
     margin: 3,
-    backgroundColor: 'rgba(230, 230, 230, .1)',
+    backgroundColor: 'rgba(230, 230, 230, .5)',
     padding: 10,
     borderRadius: 10,
   },
   noteTitle: {
     fontSize: 20,
-    fontWeight: '200',
+    fontWeight: '300',
     letterSpacing: 1,
     marginBottom: 3,
   },
   noteField: {
     fontSize: 17,
     fontWeight: '300',
+    opacity: .7
   }
 });
