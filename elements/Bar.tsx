@@ -61,12 +61,13 @@ const styles = StyleSheet.create({
     fontSize: 17,
     backgroundColor: "#ddd",
     borderRadius: 25,
-    flexBasis: '85%',
+    flexBasis: '83%',
   },
   keyboard: {
     position: 'absolute',
-    left: 17,
-    bottom: 30,
+    left: 10,
+    bottom: 25,
+    zIndex: 3,
   },
   container: {
     flex: 1,

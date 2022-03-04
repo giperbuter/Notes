@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(230, 230, 230, .5)',
     padding: 10,
     borderRadius: 10,
+    zIndex: 2,
   },
   noteTitle: {
     fontSize: 20,
