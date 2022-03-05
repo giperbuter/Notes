@@ -1,17 +1,24 @@
 import React from 'react'
-import { StyleSheet, View, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, KeyboardAvoidingView, TextInput } from 'react-native';
 
-let Icon = require('./Icon.tsx')
-let Create = require('./Create.tsx')
+import SearchIcon from './search-icon.jsx'
+import PlusIcon from './plus-icon.jsx'
 
 
 let Bar = (props) => {
   return (
-    <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={20} style={styles.keyboard}>
-      <View style={styles.container}>
-        <Create />
-        <Icon />
-      </View>
+    <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={20} style={styles.keyboardView}>
+        <View style={styles.left}>
+          <TextInput 
+            placeholder='Tap to create a Note!'
+            style={styles.leftTextinput}
+          />
+        </View>
+        <View style={styles.right}>
+          <View style={styles.icon}>
+            <PlusIcon />
+          </View>
+        </View>
     </KeyboardAvoidingView>
   )
 }
@@ -19,15 +26,39 @@ let Bar = (props) => {
 module.exports = Bar;
 
 const styles = StyleSheet.create({
-  keyboard: {
-    position: 'absolute',
-    left: 10,
-    bottom: 25,
-    zIndex: 3,
+  right: {
+    flexBasis: '15%',
+    flex: 1,
+    alignItems: 'flex-end',
   },
-  container: {
+  left: {
+    flexBasis: '85%',
+    flex: 1,
+  },
+  icon: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    padding: 5,
+    borderRadius: 50,
+    backgroundColor: 'rgba(255, 255, 255, .7)',
+  },
+  leftTextinput: {
+    height: 40,
+    width: '100%',
+    paddingLeft: 15,
+    paddingRight: 15,
+    fontSize: 17,
+    backgroundColor: "#ddd",
+    borderRadius: 25,
+  },
+  keyboardView: {
+    position: 'absolute',
+    left: 0,
+    bottom: 30,
     flex: 1,
     flexWrap: 'wrap',
-    flexDirection: 'row'
-  }
+    flexDirection: 'row',
+    marginHorizontal: '3%',
+  },
 });

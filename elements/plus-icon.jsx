@@ -1,23 +1,21 @@
-
 import * as React from 'react';
 import { SvgCss } from 'react-native-svg';
 
 const xml = `
 <svg
-  xmlns="http://www.w3.org/2000/svg"
-  height="48px"
   viewBox="0 0 24 24"
-  width="48px"
-  fill="#000000"
+  fill="#000000ff"
 >
-  <path
-    d="M0 0h24v24H0V0z"
-    fill="none"
-  />
   <path
     d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
   />
 </svg>
 `;
 
-export default () => <SvgCss xml={xml} width="100%" height="100%" />;
+let PlusIcon = () => {
+  return (
+    <SvgCss xml={xml} width="100%" height="100%" fillOpacity={1} />
+  )
+}
+
+export default PlusIcon;
