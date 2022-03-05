@@ -12,6 +12,7 @@ let Bar = (props) => {
   const [isFinishIcon, setIsFinishIcon] = useState(false);
   const [enableKeyboard, setEnableKeyboard] = useState(true);
   const [isSearchBar, setIsSearchBar] = useState(false);
+  const [isCreateBar, setIsCreateBar] = useState(true);
   // const [isChanging, setIsChanging] = useState(false);
 
   const searchOpacity = useRef(new Animated.Value(1)).current;
@@ -42,15 +43,17 @@ let Bar = (props) => {
   Keyboard.addListener('keyboardDidHide', keyboardHid);
 
   let searchPress = () => {
-    setIsSearchBar(false);
     if (isSearchBar) {
-      Animated.timing(changeAnim, { toValue: 1, duration: 2000, useNativeDriver: false }).start(() => { Animated.timing(homeOpacity, { toValue: 0, duration: 200, useNativeDriver: true }).start() })
-      Animated.timing(createBarOpacity, { toValue: 1, duration: 2000, useNativeDriver: false }).start();
-      setIsSearchBar(false);
+      Animated.timing(changeAnim, { toValue: 1, duration: 200, useNativeDriver: false }).start(() => { setIsSearchBar(false); })
+      Animated.parallel([
+      Animated.timing(homeOpacity, { toValue: 0, duration: 100, useNativeDriver: true }),
+      Animated.timing(createBarOpacity, { toValue: 1, duration: 200, useNativeDriver: true })], {stopTogether:false}).start();
       setEnableKeyboard(true);
+      setIsCreateBar(true);
     } else if (isSearchBar == false) {
-      Animated.timing(changeAnim, { toValue: 0, duration: 200, useNativeDriver: false }).start(() => { Animated.timing(homeOpacity, { toValue: 1, duration: 200, useNativeDriver: true }).start(); setIsSearchBar(true); });
-      Animated.timing(createBarOpacity, { toValue: 0, duration: 200, useNativeDriver: false }).start();
+      Animated.parallel([
+      Animated.timing(changeAnim, { toValue: 0, duration: 200, useNativeDriver: false }),
+      Animated.timing(createBarOpacity, { toValue: 0, duration: 200, useNativeDriver: true })], {stopTogether:false}).start(() => { Animated.timing(homeOpacity, { toValue: 1, duration: 200, useNativeDriver: true }).start(); setIsSearchBar(true); setIsCreateBar(false);});
       setEnableKeyboard(false);
     }
   }
@@ -59,17 +62,18 @@ let Bar = (props) => {
     <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={20} style={styles.keyboardView}>
       <Animated.View style={[styles.left, { flexBasis: changeAnim.interpolate({ inputRange: [0, 1], outputRange: ['14%', '85%'] }) }]}>
         <Animated.View style={[styles.leftTextinputContainer, { width: changeAnim.interpolate({ inputRange: [0, 1], outputRange: [40, 305] }) }]}>
-          {(!isSearchBar) ?
+          {(isCreateBar) ?
             <Animated.View style={{ opacity: createBarOpacity }}>
               <TextInput placeholder='Tap to create a Note!' style={styles.leftTextinput} editable={enableKeyboard} />
             </Animated.View>
-            :
-            <View style={[styles.leftIcon]}>
-              <Animated.View style={{ opacity: homeOpacity }}>
-                <PlusIcon />
-              </Animated.View>
-            </View>
-          }
+            : null}
+            {(isSearchBar) ? 
+              <View style={[styles.leftIcon]}>
+                <Animated.View style={{ opacity: homeOpacity }}>
+                  <PlusIcon />
+                </Animated.View>
+              </View>
+            : null}
         </Animated.View>
       </Animated.View>
       <Animated.View style={[styles.right, { flexBasis: changeAnim.interpolate({ inputRange: [0, 1], outputRange: ['85%', '14%'] }) }]}>
@@ -152,6 +156,7 @@ const styles = StyleSheet.create({
     padding: 3,
     right: 0,
     borderRadius: 50,
+    zIndex: 7,
   },
   rightTextinputContainer: {
     height: 40,
@@ -181,8 +186,8 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
     fontSize: 17,
-    backgroundColor: "#ddd",
-    borderRadius: 25,
+    // backgroundColor: "#ddd",
+    // borderRadius: 25,
   },
   keyboardView: {
     position: 'absolute',
