@@ -10,6 +10,7 @@ let Bar = require('./elements/Bar.tsx')
 // add messages(a text at the end)
 // only see the title in the list and when taped everything rolls out
 // animatied linear gradient background
+// add vibration in needed places
 
 export default function App() {
   return (
