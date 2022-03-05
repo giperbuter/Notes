@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { StyleSheet, View, TextInput, KeyboardAvoidingView, Keyboard, Animated } from 'react-native';
+import { StyleSheet, View, Keyboard, Animated, Button } from 'react-native';
 
 import SearchIcon from './search-icon.jsx'
 import PlusIcon from './plus-icon.jsx'
@@ -19,15 +19,19 @@ let Icon = (props) => {
     Animated.timing(plusOpacityAnim, { toValue: 0, duration: 200, useNativeDriver: true }).start();
   }
 
+  let onpress = () => {
+    console.log("press!")
+  }
+
   Keyboard.addListener('keyboardWillShow', keyboardUp)
   Keyboard.addListener('keyboardWillHide', keyboardDown)
 
   return (
-    <View style={styles.icon}>
-      <Animated.View style={[styles.searchIcon, { opacity: searchOpacityAnim }]}>
+    <View style={styles.container}>
+      <Animated.View style={[styles.icon, { opacity: searchOpacityAnim }]}>
         <SearchIcon />
       </Animated.View>
-      <Animated.View style={[styles.searchIcon, { opacity: plusOpacityAnim }]}>
+      <Animated.View style={[styles.icon, { opacity: plusOpacityAnim }]}>
         <PlusIcon />
       </Animated.View>
     </View>
@@ -36,10 +40,10 @@ let Icon = (props) => {
 module.exports = Icon;
 
 const styles = StyleSheet.create({
-  icon: {
+  container: {
     flexBasis: '10%'
   },
-  searchIcon: {
+  icon: {
     position: 'absolute',
     backgroundColor: 'rgba(255, 255, 255, .7)',
     width: 40,
