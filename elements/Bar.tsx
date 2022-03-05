@@ -1,8 +1,8 @@
-import React, { useRef, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, TextInput, Animated, KeyboardAvoidingView } from 'react-native';
+import React, { useRef } from 'react'
+import { StyleSheet, View, TextInput, KeyboardAvoidingView, Keyboard, Animated } from 'react-native';
 
-// const SearchIcon = require("./search-icon.tsx")
 import SearchIcon from './search-icon.jsx'
+import PlusIcon from './plus-icon.jsx'
 
 let createFocus = () => {
 
@@ -19,11 +19,30 @@ let Create = (props) => {
 }
 
 let Search = (props) => {
+  const searchOpacityAnim = useRef(new Animated.Value(1)).current;
+  const plusOpacityAnim = useRef(new Animated.Value(0)).current;
+
+  let keyboardUp = () => {
+    Animated.timing(searchOpacityAnim, {toValue: 0, duration: 200, useNativeDriver: true}).start();
+    Animated.timing(plusOpacityAnim, {toValue: 1, duration: 200, useNativeDriver: true}).start();
+  }
+
+  let keyboardDown = () => {
+    Animated.timing(searchOpacityAnim, {toValue: 1, duration: 200, useNativeDriver: true}).start();
+    Animated.timing(plusOpacityAnim, {toValue: 0, duration: 200, useNativeDriver: true}).start();
+  }
+
+  Keyboard.addListener('keyboardWillShow', keyboardUp)
+  Keyboard.addListener('keyboardWillHide', keyboardDown)
+
   return (
     <View style={styles.search}>
-      <View style={styles.searchIcon}>
+      <Animated.View style={[styles.searchIcon, {opacity: searchOpacityAnim}]}>
         <SearchIcon />
-      </View>
+      </Animated.View>
+      <Animated.View style={[styles.searchIcon, {opacity: plusOpacityAnim}]}>
+        <PlusIcon />
+      </Animated.View>
     </View>
   )
 }
@@ -46,6 +65,7 @@ const styles = StyleSheet.create({
     flexBasis: '10%'
   },
   searchIcon: {
+    position: 'absolute',
     backgroundColor: 'rgba(255, 255, 255, .7)',
     width: 40,
     height: 40,
