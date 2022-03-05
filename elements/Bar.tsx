@@ -5,21 +5,19 @@ import SearchIcon from './search-icon.jsx'
 import PlusIcon from './plus-icon.jsx'
 import FinishIcon from './finish-icon.jsx'
 
-// one animation variable (1-0) with interpolation
-
 let Bar = (props) => {
   const [isSearchIcon, setIsSearchIcon] = useState(true);
   const [isFinishIcon, setIsFinishIcon] = useState(false);
-  const [enableKeyboard, setEnableKeyboard] = useState(true);
+  const [isAddIcon, setIsAddIcon] = useState(false);
   const [isSearchBar, setIsSearchBar] = useState(false);
   const [isCreateBar, setIsCreateBar] = useState(true);
-  // const [isChanging, setIsChanging] = useState(false);
 
   const searchOpacity = useRef(new Animated.Value(1)).current;
   const finishOpacity = useRef(new Animated.Value(0)).current;
-  const homeOpacity = useRef(new Animated.Value(0)).current;
+  const addOpacity = useRef(new Animated.Value(0)).current;
   const createBarOpacity = useRef(new Animated.Value(1)).current;
-  const changeAnim = useRef(new Animated.Value(1)).current;
+  const searchBarOpacity = useRef(new Animated.Value(0)).current;
+  const changeTextinput = useRef(new Animated.Value(1)).current;
 
   let keyboardShowing = () => {
     Animated.timing(searchOpacity, { toValue: 0, duration: 150, useNativeDriver: true }).start();
@@ -43,83 +41,161 @@ let Bar = (props) => {
   Keyboard.addListener('keyboardDidHide', keyboardHid);
 
   let searchPress = () => {
-    if (isSearchBar) {
-      Animated.timing(changeAnim, { toValue: 1, duration: 200, useNativeDriver: false }).start(() => { setIsSearchBar(false); })
+    if (!isSearchBar) { // when SEARCH bar pops up
       Animated.parallel([
-      Animated.timing(homeOpacity, { toValue: 0, duration: 100, useNativeDriver: true }),
-      Animated.timing(createBarOpacity, { toValue: 1, duration: 200, useNativeDriver: true })], {stopTogether:false}).start();
-      setEnableKeyboard(true);
+        Animated.timing(changeTextinput, { toValue: 0, duration: 400, useNativeDriver: false }),
+        Animated.timing(createBarOpacity, { toValue: 0, duration: 400, useNativeDriver: true }),
+      ], { stopTogether: false })
+      .start(() => { 
+        Animated.timing(addOpacity, { toValue: 1, duration: 400, useNativeDriver: true }).start();
+        Animated.timing(searchBarOpacity, { toValue: 1, duration: 400, useNativeDriver: true }).start();
+        setIsAddIcon(true);
+        setIsCreateBar(false);
+        setIsSearchBar(true);
+      });
+
+    } else { // when CREATE bar pops up
+
+      Animated.timing(changeTextinput, { toValue: 1, duration: 400, useNativeDriver: false })
+        .start(() => {})
+      
+      Animated.parallel([
+        Animated.timing(addOpacity, { toValue: 0, duration: 100, useNativeDriver: true }),
+        Animated.timing(searchBarOpacity, { toValue: 0, duration: 100, useNativeDriver: true }),
+        Animated.timing(createBarOpacity, { toValue: 1, duration: 400, useNativeDriver: true })
+      ], { stopTogether: false })
+      .start(() => {
+        setIsAddIcon(false);
+        setIsSearchBar(false);
+      });
+    
       setIsCreateBar(true);
-    } else if (isSearchBar == false) {
-      Animated.parallel([
-      Animated.timing(changeAnim, { toValue: 0, duration: 200, useNativeDriver: false }),
-      Animated.timing(createBarOpacity, { toValue: 0, duration: 200, useNativeDriver: true })], {stopTogether:false}).start(() => { Animated.timing(homeOpacity, { toValue: 1, duration: 200, useNativeDriver: true }).start(); setIsSearchBar(true); setIsCreateBar(false);});
-      setEnableKeyboard(false);
     }
   }
 
   return (
-    <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={20} style={styles.keyboardView}>
-      <Animated.View style={[styles.left, { flexBasis: changeAnim.interpolate({ inputRange: [0, 1], outputRange: ['14%', '85%'] }) }]}>
-        <Animated.View style={[styles.leftTextinputContainer, { width: changeAnim.interpolate({ inputRange: [0, 1], outputRange: [40, 305] }) }]}>
+    <KeyboardAvoidingView
+      behavior='padding'
+      keyboardVerticalOffset={20}
+      style={styles.keyboardView} >
+
+      {/* Left side - Create */}
+      <Animated.View
+        style={[
+          styles.leftSide,
+          // WIDTH of create textinput / icon
+          { flexBasis: changeTextinput.interpolate({ inputRange: [0, 1], outputRange: ['14%', '85%'] }) }]}>
+        
+        {/* background */}
+        <Animated.View
+          style={[
+            styles.createContainer,
+            // WIDTH of textinput's background
+            { width: changeTextinput.interpolate({ inputRange: [0, 1], outputRange: [40, 305] }) }]}>
+          
+          {/* the text input bar */}
           {(isCreateBar) ?
-            <Animated.View style={{ opacity: createBarOpacity }}>
-              <TextInput placeholder='Tap to create a Note!' style={styles.leftTextinput} editable={enableKeyboard} />
+
+            <Animated.View 
+              style={{ opacity: createBarOpacity }}>
+              
+              <TextInput 
+                placeholder='Tap to create a Note!' 
+                style={styles.createBar} />
+            
             </Animated.View>
-            : null}
-            {(isSearchBar) ? 
-              <View style={[styles.leftIcon]}>
-                <Animated.View style={{ opacity: homeOpacity }}>
-                  <PlusIcon />
-                </Animated.View>
-              </View>
-            : null}
+
+          : null}
+
+          {/* add icon */}
+          {(isAddIcon) ?
+
+            <View 
+              style={[styles.addIcon]}>
+              
+              <Animated.View 
+                style={{ opacity: addOpacity }}>
+                
+                <PlusIcon />
+              
+              </Animated.View>
+            
+            </View>
+
+          : null}
+
         </Animated.View>
+
       </Animated.View>
-      <Animated.View style={[styles.right, { flexBasis: changeAnim.interpolate({ inputRange: [0, 1], outputRange: ['85%', '14%'] }) }]}>
-        <Animated.View style=
-          {
-            [
-              styles.iconContainer,
-              {
-                borderRadius: changeAnim.interpolate(
-                  {
-                    inputRange: [0, 1],
-                    outputRange: [10, 50]
-                  }
-                ),
-                width: changeAnim.interpolate(
-                  {
-                    inputRange: [0, 1],
-                    outputRange: [305, 40]
-                  }
-                )
-              }
-            ]
-          }>
+      
+      {/* Right side - search */}
+      <Animated.View
+        style={[
+          styles.rightSide,
+          // WIDTH of search textinput / icon
+          { flexBasis: changeTextinput.interpolate({ inputRange: [0, 1], outputRange: ['85%', '14%'] }) }]}>
+        
+        {/* background */}
+        <Animated.View style={[
+          styles.iconContainer, {
+            // EDGE'S ROUND of icon
+            borderRadius: changeTextinput.interpolate({ inputRange: [0, 1], outputRange: [10, 50] }),
+            // WIDTH of icon's background
+            width: changeTextinput.interpolate({ inputRange: [0, 1], outputRange: [305, 40] })
+          }]}>
+          
+          {/* search icon */}
           {isSearchIcon ?
-            // <Pressable onPress={searchPress}>
-            <Animated.View style={[styles.icon, { opacity: searchOpacity }]}>
-              <Pressable onPress={searchPress} style={{}}>
+
+            <Animated.View
+              style={[
+                styles.icon,
+                { opacity: searchOpacity }]}>
+
+              <Pressable
+                onPress={searchPress}>
+
                 <SearchIcon />
+
               </Pressable>
+
             </Animated.View>
-            : <></>}
+
+          : null}
+
+          {/* finish icon */}
           {isFinishIcon ?
-            <Animated.View style={[styles.icon, { opacity: finishOpacity }]}>
+
+            <Animated.View style={[
+              styles.icon,
+              { opacity: finishOpacity }]}>
+
               <FinishIcon />
+
             </Animated.View>
-            : <></>}
+
+          : null}
+
+          {/* text input bar */}
           {isSearchBar ?
-            <Animated.View style={[styles.rightTextinputContainer, { opacity: homeOpacity }]}>
+
+            <Animated.View
+              style={[
+                styles.searchContainer,
+                { opacity: searchBarOpacity }]}>
+
               <TextInput
                 placeholder='Tap to Search for a Note!'
-                style={styles.rightTextinput}
-              />
+                style={styles.searchBar} />
+
             </Animated.View>
-            : <></>}
+          
+          : null}
+
         </Animated.View>
+
       </Animated.View>
+
     </KeyboardAvoidingView>
   )
 }
@@ -127,11 +203,11 @@ let Bar = (props) => {
 module.exports = Bar;
 
 const styles = StyleSheet.create({
-  right: {
+  rightSide: {
     flex: 1,
     alignItems: 'flex-end',
   },
-  left: {
+  leftSide: {
     flex: 1,
     alignItems: 'flex-start',
   },
@@ -148,7 +224,7 @@ const styles = StyleSheet.create({
     padding: 3,
     right: 0,
   },
-  leftIcon: {
+  addIcon: {
     position: 'absolute',
     width: 40,
     height: 40,
@@ -156,38 +232,32 @@ const styles = StyleSheet.create({
     padding: 3,
     right: 0,
     borderRadius: 50,
-    zIndex: 7,
   },
-  rightTextinputContainer: {
-    height: 40,
-    width: 250,
-    left: 0,
-  },
-  rightTextinput: {
-    height: 40,
-    width: 250,
-    left: 0,
-    paddingLeft: 15,
-    paddingRight: 15,
-    fontSize: 17,
-    backgroundColor: "#0000",
-    borderRadius: 10,
-  },
-  leftTextinputContainer: {
+  createContainer: {
     height: 40,
     width: '100%',
     backgroundColor: "#ddd",
     borderRadius: 25,
   },
-  leftTextinput: {
+  createBar: {
     height: 40,
     width: '100%',
     left: 0,
     paddingLeft: 15,
     paddingRight: 15,
     fontSize: 17,
-    // backgroundColor: "#ddd",
-    // borderRadius: 25,
+  },
+  searchContainer: {
+    height: 40,
+    width: 250,
+    left: 0,
+  },
+  searchBar: {
+    height: '100%',
+    width: '100%',
+    paddingHorizontal: 15,
+    fontSize: 17,
+    borderRadius: 10,
   },
   keyboardView: {
     position: 'absolute',
