@@ -12,10 +12,10 @@ const xml = `
 </svg>
 `;
 
-let PlusIcon = () => {
+let Icon = () => {
   return (
     <SvgCss xml={xml} width="100%" height="100%" fillOpacity={1} />
   )
 }
 
-export default PlusIcon;
+export default Icon;
