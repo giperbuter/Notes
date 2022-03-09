@@ -21,7 +21,9 @@ let Bar = (props) => {
   const searchUpAN = useRef(new Animated.Value(1)).current;
   const createUpAN = useRef(new Animated.Value(0)).current;
 
-  const searchBarFocus = () => {
+  let textInputRef = <TextInput></TextInput>;
+
+  const searchBarFocus = () => { 
     Animated.parallel([
       Animated.timing(changeTextinput, { toValue: 0, duration: 250, useNativeDriver: false }),
       Animated.timing(createBarOpacity, { toValue: 0, duration: 250, useNativeDriver: false }),
@@ -123,11 +125,12 @@ let Bar = (props) => {
               
           {/* create text input - title */}
           {(createBar) ?
+
             <Animated.View
               style={{
                 opacity: createBarOpacity,
                 width: createUpAN.interpolate({ inputRange: [0, 1], outputRange: ['100%', '96%'] }),
-                paddingTop: createUpAN.interpolate({ inputRange: [0, 1], outputRange: [0, 8] }),
+                paddingTop: createUpAN.interpolate({ inputRange: [0, 1], outputRange: [0, 10] }),
                 paddingLeft: createUpAN.interpolate({ inputRange: [0, 1], outputRange: ['0%', '4%'] }),
               }}>
 
@@ -136,14 +139,19 @@ let Bar = (props) => {
                   backgroundColor: createUpAN.interpolate({ inputRange: [0, 1], outputRange: ['#dcdcff00', '#dcdcff55']}),
                   borderRadius: createUpAN.interpolate({ inputRange: [0, 1], outputRange: [0, 50]}) 
                 }}>
+
                 <TextInput
-                  placeholder={(keyboardUp) ? 'title' : 'Tap to create a Note!'}
+                  placeholder={(keyboardUp) ? 'Type the title here' : 'Tap to create a Note!'}
                   style={styles.createTitle}
                   onFocus={createUp}
+                  onSubmitEditing={() => {textInputRef.focus()}}
                   />
+
               </Animated.View>
+
             </Animated.View>
-            : null}
+          
+          : null}
 
           {/* create text input - text */}
           {(text) ?
@@ -157,7 +165,8 @@ let Bar = (props) => {
               }}>
 
               <TextInput
-                placeholder={'\ntext'}
+                ref={(i) => {textInputRef = i}}
+                placeholder='And here the text'
                 style={styles.createText}
                 multiline={true}
                 onContentSizeChange={(event) => {
@@ -307,8 +316,6 @@ const styles = StyleSheet.create({
     left: 0,
     paddingLeft: 15,
     paddingRight: 15,
-    paddingTop: 5,
-    paddingBottom: 5,
     backgroundColor: 'rgba(220, 220, 255, .3)',
     borderRadius: 15,
     fontSize: 17,
