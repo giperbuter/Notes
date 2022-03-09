@@ -6,38 +6,36 @@ import PlusIcon from './plus-icon.jsx'
 import FinishIcon from './finish-icon.jsx'
 
 let Bar = (props) => {
-  const [isSearchIcon, setIsSearchIcon] = useState(true);
-  const [isFinishIcon, setIsFinishIcon] = useState(false);
-  const [isAddIcon, setIsAddIcon] = useState(false);
-  const [isSearchBar, setIsSearchBar] = useState(false);
-  const [isCreateBar, setIsCreateBar] = useState(true);
+  const [addIcon, setAddIcon] = useState(false);
+  const [searchBar, setSearchBar] = useState(false);
+  const [createBar, setCreateBar] = useState(true);
   const [pressable, setPressable] = useState(true);
   const [keyboardUp, setKeyboardUp] = useState(false);
+  const [paragraph, setParagraph] = useState(false);
 
-  const searchOpacity = useRef(new Animated.Value(1)).current;
-  const finishOpacity = useRef(new Animated.Value(0)).current;
   const addOpacity = useRef(new Animated.Value(0)).current;
   const createBarOpacity = useRef(new Animated.Value(1)).current;
   const searchBarOpacity = useRef(new Animated.Value(0)).current;
   const changeTextinput = useRef(new Animated.Value(1)).current;
-  const leftOpacity = useRef(new Animated.Value(1)).current;
+  const searchUpAN = useRef(new Animated.Value(1)).current;
+  const createUpAN = useRef(new Animated.Value(0)).current;
 
   let changeBar = () => {
     if (!pressable) return;
 
-    if (!isSearchBar) { // when SEARCH bar pops up
+    if (!searchBar) { // when SEARCH bar pops up
       setPressable(false);
 
       Animated.parallel([
         Animated.timing(changeTextinput, { toValue: 0, duration: 250, useNativeDriver: false }),
-        Animated.timing(createBarOpacity, { toValue: 0, duration: 250, useNativeDriver: true }),
+        Animated.timing(createBarOpacity, { toValue: 0, duration: 250, useNativeDriver: false }),
       ], { stopTogether: false })
         .start(() => {
-          Animated.timing(addOpacity, { toValue: 1, duration: 200, useNativeDriver: true }).start();
+          Animated.timing(addOpacity, { toValue: 1, duration: 200, useNativeDriver: false }).start();
           Animated.timing(searchBarOpacity, { toValue: 1, duration: 200, useNativeDriver: false }).start();
-          setIsAddIcon(true);
-          setIsCreateBar(false);
-          setIsSearchBar(true);
+          setAddIcon(true);
+          setCreateBar(false);
+          setSearchBar(true);
           setPressable(true);
         });
 
@@ -46,35 +44,50 @@ let Bar = (props) => {
 
       Animated.timing(changeTextinput, { toValue: 1, duration: 250, useNativeDriver: false }).start()
       Animated.parallel([
-        Animated.timing(addOpacity, { toValue: 0, duration: 100, useNativeDriver: true }),
+        Animated.timing(addOpacity, { toValue: 0, duration: 100, useNativeDriver: false }),
         Animated.timing(searchBarOpacity, { toValue: 0, duration: 100, useNativeDriver: false }),
-        Animated.timing(createBarOpacity, { toValue: 1, duration: 250, useNativeDriver: true })
+        Animated.timing(createBarOpacity, { toValue: 1, duration: 250, useNativeDriver: false })
       ], { stopTogether: false })
         .start(() => {
-          setIsAddIcon(false);
-          setIsSearchBar(false);
+          setAddIcon(false);
+          setSearchBar(false);
           setPressable(true);
         });
-      setIsCreateBar(true);
+      setCreateBar(true);
     }
   }
 
   let searchUp = () => {
     setKeyboardUp(true);
-    Animated.parallel([
-      Animated.timing(addOpacity, { toValue: 0, duration: 150, useNativeDriver: true }),
-      Animated.timing(leftOpacity, { toValue: 0, duration: 150, useNativeDriver: false }),
-      Animated.timing(changeTextinput, { toValue: -0.2, duration: 250, useNativeDriver: false })
-    ], { stopTogether: false }).start();
+    Animated.timing(addOpacity, { toValue: 0, duration: 150, useNativeDriver: false }).start();
+    Animated.timing(searchUpAN, { toValue: 0, duration: 150, useNativeDriver: false }).start();
+    Animated.timing(changeTextinput, { toValue: -0.2, duration: 250, useNativeDriver: false }).start();
   }
 
   let searchDown = () => {
     setKeyboardUp(false);
     Animated.timing(changeTextinput, { toValue: 0, duration: 150, useNativeDriver: false }).start(() => {
-      Animated.timing(addOpacity, { toValue: 1, duration: 150, useNativeDriver: true }).start();
-      Animated.timing(leftOpacity, { toValue: 1, duration: 150, useNativeDriver: false }).start();
+      Animated.timing(addOpacity, { toValue: 1, duration: 150, useNativeDriver: false }).start();
+      Animated.timing(searchUpAN, { toValue: 1, duration: 150, useNativeDriver: false }).start();
     });
   }
+
+  let createUp = () => {
+    setKeyboardUp(true);
+    Animated.timing(createUpAN, { toValue: 1, duration: 1000, delay:500,  useNativeDriver: false }).start()
+    setParagraph(true);
+    Keyboard.addListener('keyboardWillHide', createDown);
+  }
+
+  let createDown = () => {
+    setKeyboardUp(false);
+    Animated.timing(createUpAN, { toValue: 0, duration: 1000, delay:500, useNativeDriver: false }).start(() => {
+      setParagraph(false);
+    });
+    Keyboard.removeAllListeners('keyboardWillHide');
+  }
+
+  let createHeight = 110;
 
   return (
     <KeyboardAvoidingView
@@ -89,35 +102,66 @@ let Bar = (props) => {
           // WIDTH of create textinput / icon
           {
             flexBasis: changeTextinput.interpolate({ inputRange: [0, 1], outputRange: ['14%', '85%'] }),
-            opacity: leftOpacity,
-          }
-        ]}
-      >
+            opacity: searchUpAN,
+            height: createUpAN.interpolate({ inputRange: [0, 1], outputRange: [40, createHeight-10] })
+          }]}>
 
         {/* background */}
         <Animated.View
           style={[
             styles.createContainer,
             // WIDTH of textinput's background
-            { width: changeTextinput.interpolate({ inputRange: [0, 1], outputRange: [40, 305] }) }]}>
-
-          {/* the text input bar */}
-          {(isCreateBar) ?
-
+            {
+              width: changeTextinput.interpolate({ inputRange: [0, 1], outputRange: [40, 305] }),
+              height: createUpAN.interpolate({ inputRange: [0, 1], outputRange: [40, createHeight] })
+            }]}>
+              
+          {/* create text input - title */}
+          {(createBar) ?
             <Animated.View
-              style={{ opacity: createBarOpacity }}>
+              style={{
+                opacity: createBarOpacity,
+                width: createUpAN.interpolate({ inputRange: [0, 1], outputRange: ['100%', '96%'] }),
+                paddingTop: createUpAN.interpolate({ inputRange: [0, 1], outputRange: [0, 8] }),
+                paddingLeft: createUpAN.interpolate({ inputRange: [0, 1], outputRange: ['0%', '4%'] }),
+              }}>
+
+              <Animated.View
+                style={{
+                  backgroundColor: createUpAN.interpolate({ inputRange: [0, 1], outputRange: ['#dcdcff00', '#dcdcff55']}),
+                  borderRadius: createUpAN.interpolate({ inputRange: [0, 1], outputRange: [0, 50]}) 
+                }}>
+                <TextInput
+                  placeholder={(keyboardUp) ? 'title' : 'Tap to create a Note!'}
+                  style={styles.createTitle}
+                  onFocus={createUp}
+                  // onEndEditing={createDown}
+                  />
+              </Animated.View>
+            </Animated.View>
+            : null}
+
+          {/* create text input - paragraph */}
+          {(paragraph) ?
+            <Animated.View
+              style={{
+                opacity: createUpAN.interpolate({inputRange: [0, .6, 1], outputRange: [0, .1, 1]}),
+                width: createUpAN.interpolate({ inputRange: [0, 1], outputRange: ['100%', '96%'] }),
+                paddingTop: createUpAN.interpolate({ inputRange: [0, 1], outputRange: [0, 8] }),
+                paddingLeft: createUpAN.interpolate({ inputRange: [0, 1], outputRange: ['0%', '4%'] })
+              }}>
 
               <TextInput
-                placeholder={(keyboardUp) ? 'title' : 'Tap to create a Note!'}
-                style={styles.createBar} />
+                placeholder='paragraph'
+                style={styles.createParagraph}
+                // onEndEditing={createDown}
+                />
 
             </Animated.View>
-
             : null}
 
           {/* add icon */}
-          {(isAddIcon) ?
-
+          {(addIcon) ?
             <View
               style={[styles.leftIcon]}>
 
@@ -130,11 +174,8 @@ let Bar = (props) => {
                   <PlusIcon />
 
                 </Pressable>
-
               </Animated.View>
-
             </View>
-
             : null}
 
         </Animated.View>
@@ -149,55 +190,47 @@ let Bar = (props) => {
           { flexBasis: (changeTextinput.interpolate({ inputRange: [0, 1], outputRange: ['85%', '14%'] })) }]}>
 
         {/* background */}
-        <Animated.View 
+        <Animated.View
           style={[
             styles.rightIconContainer, {
-            // Round Corners of icon
-            borderRadius: (keyboardUp) ? 10 : changeTextinput.interpolate({ inputRange: [0, 1], outputRange: [10, 50] }),
-            // Width of icon's background
-            width: changeTextinput.interpolate({ inputRange: [0, 1], outputRange: [305, 40] })
-          }]}>
-
-          {/* search icon */}
-          {isSearchIcon ?
-
-            <Animated.View
-              style={[
-                styles.rightIcon,
-                { opacity: searchOpacity }]}>
-
-              <Pressable
-                onPress={changeBar}>
-
-                <SearchIcon />
-
-              </Pressable>
-
-            </Animated.View>
-
-            : null}
+              // Round Corners of icon
+              borderRadius: (keyboardUp && searchBar) ? 10 : changeTextinput.interpolate({ inputRange: [0, 1], outputRange: [10, 50] }),
+              // Width of icon's background
+              width: changeTextinput.interpolate({ inputRange: [0, 1], outputRange: [305, 40] })
+            }]}>
 
           {/* finish icon */}
-          {isFinishIcon ?
+          <Animated.View style={[
+            styles.rightIcon,
+            { opacity: createUpAN.interpolate({ inputRange: [0, 1], outputRange: [0, 1] }) }]}>
 
-            <Animated.View style={[
+            <FinishIcon />
+
+          </Animated.View>
+
+          {/* search icon */}
+          <Animated.View
+            style={[
               styles.rightIcon,
-              { opacity: finishOpacity }]}>
+              { opacity: createUpAN.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}>
 
-              <FinishIcon />
+            <Pressable
+              onPress={(keyboardUp) ? null : changeBar}>
 
-            </Animated.View>
+              <SearchIcon />
 
-            : null}
+            </Pressable>
+          </Animated.View>
 
           {/* text input bar */}
-          {isSearchBar ?
-
+          {searchBar ?
             <Animated.View
               style={[
                 styles.searchContainer,
-                { opacity: searchBarOpacity,
-                  width: changeTextinput.interpolate({ inputRange: [-0.2, 0], outputRange: [320, 250] }) }]}>
+                {
+                  opacity: searchBarOpacity,
+                  width: changeTextinput.interpolate({ inputRange: [-0.2, 0], outputRange: [320, 250] })
+                }]}>
 
               <TextInput
                 placeholder='Tap to Search for a Note!'
@@ -207,13 +240,9 @@ let Bar = (props) => {
                 onEndEditing={searchDown} />
 
             </Animated.View>
-
             : null}
-
         </Animated.View>
-
       </Animated.View>
-
     </KeyboardAvoidingView>
   )
 }
@@ -224,6 +253,7 @@ const styles = StyleSheet.create({
   rightSide: {
     flex: 1,
     alignItems: 'flex-end',
+    height: 40,
   },
   leftSide: {
     flex: 1,
@@ -233,6 +263,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 40,
     height: 40,
+    bottom: 0,
     opacity: .8,
     backgroundColor: 'rgb(200, 200, 255)',
   },
@@ -252,18 +283,26 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   createContainer: {
-    height: 40,
-    width: '100%',
-    opacity: .9,
-    backgroundColor: 'rgb(220, 220, 255)',
+    backgroundColor: 'rgba(220, 220, 255, .5)',
     borderRadius: 25,
   },
-  createBar: {
+  createTitle: {
+    position: 'relative',
     height: 40,
-    width: '100%',
     left: 0,
     paddingLeft: 15,
     paddingRight: 15,
+    borderRadius: 25,
+    fontSize: 17,
+  },
+  createParagraph: {
+    position: 'relative',
+    height: 40,
+    left: 0,
+    paddingLeft: 15,
+    paddingRight: 15,
+    backgroundColor: 'rgba(220, 220, 255, .3)',
+    borderRadius: 25,
     fontSize: 17,
   },
   searchContainer: {
