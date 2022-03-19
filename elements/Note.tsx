@@ -33,7 +33,6 @@ const styles = StyleSheet.create({
     margin: 3,
     zIndex: 2,
     overflow: 'hidden',
-    // backgroundColor: "rgba(170, 170, 170, .8)",
   },
   blur: {
     position: 'absolute',

@@ -1,9 +1,16 @@
 import React, { useRef, useState } from 'react'
 import { StyleSheet, View, KeyboardAvoidingView, TextInput, Animated, Keyboard, Pressable } from 'react-native';
+import { BlurView } from 'expo-blur';
 
 import SearchIcon from './search-icon.jsx'
 import PlusIcon from './plus-icon.jsx'
 import FinishIcon from './finish-icon.jsx'
+
+// next modification:
+// add blur to text create
+// add little shadow to title and text (maybe to others too)
+// put the create shit in order(rearrange and rename)
+// make styles eith parameters that will handle interpolation(for cleaner code) 
 
 let Bar = (props) => {
   const [addIcon, setAddIcon] = useState(false);
@@ -19,6 +26,7 @@ let Bar = (props) => {
   const changeTextinput = useRef(new Animated.Value(1)).current;
   const searchUpAN = useRef(new Animated.Value(1)).current;
   const createUpAN = useRef(new Animated.Value(0)).current;
+  const titleIntensity = useRef(new Animated.Value(0)).current;
 
   const textInputRef = useRef<TextInput | null>(null);
 
@@ -80,6 +88,7 @@ let Bar = (props) => {
 
   let createUp = () => {
     setKeyboardUp(true);
+    Animated.timing(titleIntensity, { toValue: 20, duration: 300, useNativeDriver: false }).start()
     Animated.timing(createUpAN, { toValue: 1, duration: 300, useNativeDriver: false }).start()
     setText(true);
     Keyboard.addListener('keyboardWillHide', createDown);
@@ -87,11 +96,14 @@ let Bar = (props) => {
 
   let createDown = () => {
     setKeyboardUp(false);
+    Animated.timing(titleIntensity, { toValue: 0, duration: 200, useNativeDriver: false }).start()
     Animated.timing(createUpAN, { toValue: 0, duration: 200, useNativeDriver: false }).start(() => {
       setText(false);
     });
     Keyboard.removeAllListeners('keyboardWillHide');
   }
+
+  const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
 
   return (
     <KeyboardAvoidingView
@@ -107,7 +119,7 @@ let Bar = (props) => {
             flexBasis: changeTextinput.interpolate({ inputRange: [0, 1], outputRange: ['14%', '85%'] }),
             opacity: searchUpAN,
             height:
-              createUpAN.interpolate({ inputRange: [0, 1], outputRange: [40, 53 + 63] }) 
+              createUpAN.interpolate({ inputRange: [0, 1], outputRange: [40, 53 + 63] })
           }]}>
 
         {/* background */}
@@ -119,6 +131,8 @@ let Bar = (props) => {
               height:
                 createUpAN.interpolate({ inputRange: [0, 1], outputRange: [40, 60 + 63] })
             }]}>
+              
+          <BlurView style={styles.blur} tint='light' intensity={50} />
 
           {/* create text input - title */}
           {(createBar) ?
@@ -133,9 +147,11 @@ let Bar = (props) => {
 
               <Animated.View
                 style={{
-                  backgroundColor: createUpAN.interpolate({ inputRange: [0, 1], outputRange: ['#dcdcff00', '#dcdcff55'] }),
-                  borderRadius: createUpAN.interpolate({ inputRange: [0, 1], outputRange: [0, 50] })
+                  overflow: 'hidden',
+                  borderRadius: createUpAN.interpolate({ inputRange: [0, 1], outputRange: [0, 15] })
                 }}>
+
+                <AnimatedBlurView style={styles.blur} tint='light' intensity={titleIntensity} />
 
                 <TextInput
                   placeholder={(keyboardUp) ? 'Type the title here' : 'Tap to create a Note!'}
@@ -179,6 +195,7 @@ let Bar = (props) => {
 
           {/* add icon */}
           {(addIcon) ?
+
             <View
               style={[styles.leftIcon]}>
 
@@ -193,6 +210,7 @@ let Bar = (props) => {
                 </Pressable>
               </Animated.View>
             </View>
+
             : null}
 
         </Animated.View>
@@ -212,7 +230,7 @@ let Bar = (props) => {
               borderRadius: (keyboardUp && searchBar) ? 10 : changeTextinput.interpolate({ inputRange: [0, 1], outputRange: [10, 50] }),
               width: changeTextinput.interpolate({ inputRange: [0, 1], outputRange: [305, 40] })
             }]}>
-
+          <BlurView style={styles.blur} tint='light' intensity={40} />
           {/* finish icon */}
           <Animated.View style={[
             styles.rightIcon,
@@ -277,11 +295,14 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     bottom: 0,
-    backgroundColor: 'rgba(200, 200, 255, .6)',
-    shadowOffset: { width: 3, height: 3 },
-    // shadowColor: '#000',
-    // shadowRadius: 2,
-    // shadowOpacity: .3,
+    overflow: 'hidden',
+  },
+  blur: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
   },
   rightIcon: {
     position: 'absolute',
@@ -299,8 +320,8 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   createContainer: {
-    backgroundColor: 'rgba(220, 220, 255, .5)',
     borderRadius: 25,
+    overflow: 'hidden',
   },
   createTitle: {
     position: 'relative',
@@ -320,7 +341,6 @@ const styles = StyleSheet.create({
     height: 55,
     paddingLeft: 15,
     paddingRight: 15,
-    backgroundColor: 'rgba(220, 220, 255, .3)',
     borderRadius: 15,
     fontSize: 17,
     lineHeight: 17,

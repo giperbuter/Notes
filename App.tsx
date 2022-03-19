@@ -7,8 +7,7 @@ let Bar = require('./elements/Bar.tsx')
 // add links
 // add lists
 // add images
-// only see the title in the list and when taped everything rolls out
-// animatied linear gradient background
+// the bg changes colors by scroll, rotation, and maybe constantly and by dark/light mode
 
 // add haptics
 // context-menu for notes
@@ -17,7 +16,20 @@ let Bar = require('./elements/Bar.tsx')
 // locket notes with face id / finger(android)
 // somehow add react-native-community/blur for ios13 shit
 // dark/light mode
-// notex are swipable(like in spotify playlists)
+// notes are swipable(like in spotify playlists)
+// settings tab(for that ill need navigation)
+// an option to store the notes online
+// notes and/or bg responding to phone's rotation
+// long notes:
+//   long note tab: when createing a note an icon above finish opens tab for writing long notes
+//   long notes will be shown in the list only the title and subtitle or smth
+//   when long notes clicked in list they becomes bigger and expands
+//   long notes will have paragraphs and could containe images
+// tags:
+//   you can tag notes with tags. above finish icon is add tags icon, i cant think of the animations rn
+//   you can search by tags, they have their own colors
+//   right to the notes is a list of tags, when clicked, only notes with this tag shows
+//   think off how to create a tag
 
 export default function App() {
   return (
