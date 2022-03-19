@@ -7,10 +7,17 @@ let Bar = require('./elements/Bar.tsx')
 // add links
 // add lists
 // add images
-// add messages(a text at the end)
 // only see the title in the list and when taped everything rolls out
 // animatied linear gradient background
-// add vibration in needed places
+
+// add haptics
+// context-menu for notes
+// quick actions
+// add icon for adding options(add field etc)
+// locket notes with face id / finger(android)
+// somehow add react-native-community/blur for ios13 shit
+// dark/light mode
+// notex are swipable(like in spotify playlists)
 
 export default function App() {
   return (

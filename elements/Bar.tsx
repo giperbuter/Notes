@@ -12,7 +12,6 @@ let Bar = (props) => {
   const [pressable, setPressable] = useState(true);
   const [keyboardUp, setKeyboardUp] = useState(false);
   const [text, setText] = useState(false);
-  const [textFocus, setTextFocus] = useState(false);
 
   const addOpacity = useRef(new Animated.Value(0)).current;
   const createBarOpacity = useRef(new Animated.Value(1)).current;
@@ -20,7 +19,6 @@ let Bar = (props) => {
   const changeTextinput = useRef(new Animated.Value(1)).current;
   const searchUpAN = useRef(new Animated.Value(1)).current;
   const createUpAN = useRef(new Animated.Value(0)).current;
-  const textHeight = useRef(new Animated.Value(0)).current;
 
   const textInputRef = useRef<TextInput | null>(null);
 
@@ -108,9 +106,8 @@ let Bar = (props) => {
           {
             flexBasis: changeTextinput.interpolate({ inputRange: [0, 1], outputRange: ['14%', '85%'] }),
             opacity: searchUpAN,
-            height: (!textFocus) ?
-              createUpAN.interpolate({ inputRange: [0, 1], outputRange: [40, 45 + 63] }) :
-              textHeight.interpolate({ inputRange: [0, 1], outputRange: [45, 46] })
+            height:
+              createUpAN.interpolate({ inputRange: [0, 1], outputRange: [40, 53 + 63] }) 
           }]}>
 
         {/* background */}
@@ -119,9 +116,8 @@ let Bar = (props) => {
             styles.createContainer,
             {
               width: changeTextinput.interpolate({ inputRange: [0, 1], outputRange: [40, 305] }),
-              height: (!textFocus) ?
-                createUpAN.interpolate({ inputRange: [0, 1], outputRange: [40, 60 + 63] }) :
-                textHeight.interpolate({ inputRange: [0, 1], outputRange: [60, 61] })
+              height:
+                createUpAN.interpolate({ inputRange: [0, 1], outputRange: [40, 60 + 63] })
             }]}>
 
           {/* create text input - title */}
@@ -145,6 +141,9 @@ let Bar = (props) => {
                   placeholder={(keyboardUp) ? 'Type the title here' : 'Tap to create a Note!'}
                   style={styles.createTitle}
                   onFocus={createUp}
+                  maxLength={30}
+                  returnKeyType='next'
+                  clearButtonMode={'while-editing'}
                   onSubmitEditing={() => { textInputRef.current?.focus() }}
                 />
 
@@ -156,26 +155,23 @@ let Bar = (props) => {
 
           {/* create text input - text */}
           {(text) ?
+
             <Animated.View
               style={{
+                flex: 0,
                 opacity: createUpAN.interpolate({ inputRange: [0, .6, 1], outputRange: [0, .1, 1] }),
                 width: createUpAN.interpolate({ inputRange: [0, 1], outputRange: ['100%', '96%'] }),
-                height: textHeight,
                 paddingTop: createUpAN.interpolate({ inputRange: [0, 1], outputRange: [0, 8] }),
                 paddingLeft: createUpAN.interpolate({ inputRange: [0, 1], outputRange: ['0%', '4%'] })
               }}>
 
               <TextInput
                 ref={textInputRef}
-                placeholder='And here the text'
-                style={(textFocus) ? [styles.createText, { height: (textFocus) ? '100%' : 40 }] : {}}
+                placeholder={'\nAnd here the text'}
+                style={[styles.createText]}
                 multiline={true}
-                onFocus={() => { setTextFocus(true) }}
-                onEndEditing={() => { setTextFocus(false) }}
-                onContentSizeChange={(event) => {
-                  Animated.timing(textHeight, { toValue: Math.min(Math.max(event.nativeEvent.contentSize.height + 17, 63), 92), duration: 100, useNativeDriver: false }).start();
-                }} />
-
+                selectTextOnFocus={true}
+              />
 
             </Animated.View>
 
@@ -207,16 +203,13 @@ let Bar = (props) => {
       <Animated.View
         style={[
           styles.rightSide,
-          // WIDTH of search textinput / icon
           { flexBasis: (changeTextinput.interpolate({ inputRange: [0, 1], outputRange: ['85%', '14%'] })) }]}>
 
         {/* background */}
         <Animated.View
           style={[
             styles.rightIconContainer, {
-              // Round Corners of icon
               borderRadius: (keyboardUp && searchBar) ? 10 : changeTextinput.interpolate({ inputRange: [0, 1], outputRange: [10, 50] }),
-              // Width of icon's background
               width: changeTextinput.interpolate({ inputRange: [0, 1], outputRange: [305, 40] })
             }]}>
 
@@ -317,12 +310,14 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     borderRadius: 25,
     fontSize: 17,
+    paddingHorizontal: 5,
   },
   createText: {
     position: 'relative',
     textAlignVertical: 'bottom',
-    // height: '100%',
     left: 0,
+    top: 0,
+    height: 55,
     paddingLeft: 15,
     paddingRight: 15,
     backgroundColor: 'rgba(220, 220, 255, .3)',
