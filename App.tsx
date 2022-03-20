@@ -2,7 +2,7 @@ import { StyleSheet, View, ScrollView } from 'react-native';
 
 let Note = require('./elements/Note.tsx')
 let Background = require('./elements/Background.tsx')
-let Bar = require('./elements/Bar.tsx')
+let Bar = require('./elements/BottomTIs.tsx')
 
 // add links
 // add lists
