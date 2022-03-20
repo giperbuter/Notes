@@ -5,7 +5,7 @@ const int = (an: Animated.Value, output: [any, any]) => {
   return an.interpolate({ inputRange: [0, 1], outputRange: output })
 }
 
-class bottom {
+class BottomTIs {
 
   AN = {
     change: useRef(new Animated.Value(1)).current,
@@ -225,4 +225,4 @@ class bottom {
 
 }
 
-module.exports.bottom = bottom;
+module.exports.BottomTIs = BottomTIs;
