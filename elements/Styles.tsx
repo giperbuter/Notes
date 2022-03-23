@@ -226,3 +226,26 @@ class BottomTIs {
 }
 
 module.exports.BottomTIs = BottomTIs;
+
+class NoteList {
+  AN = {
+    change: useRef(new Animated.Value(1)).current,
+    search: useRef(new Animated.Value(1)).current,
+    searchOp: useRef(new Animated.Value(0)).current,
+    create: useRef(new Animated.Value(0)).current,
+    createOp: useRef(new Animated.Value(1)).current,
+    plusOp: useRef(new Animated.Value(0)).current,
+  }
+
+  blur = () => {
+    return (
+      {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        top: 0,
+        left: 0,
+      }
+    )
+  }
+}
