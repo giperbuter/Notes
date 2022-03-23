@@ -79,7 +79,7 @@ module.exports = () => {
   let createUp = () => {
     setKeyboardUp(true);
     Animated.timing(titleIntensity, { toValue: 15, duration: 300, useNativeDriver: false }).start()
-    Animated.timing(textIntensity, { toValue: 12, duration: 300, useNativeDriver: false }).start()
+    Animated.timing(textIntensity, { toValue: 15, duration: 300, useNativeDriver: false }).start() // 12
     Animated.timing(style.AN.create, { toValue: 1, duration: 300, useNativeDriver: false }).start()
     setText(true);
     Keyboard.addListener('keyboardWillHide', createDown);
@@ -136,11 +136,11 @@ module.exports = () => {
               <Animated.View style={style.createTextinputBackground()}>
 
                 <AnimatedBlurView style={style.blur()} tint='light' intensity={titleIntensity} />
-                
+
                 <Animated.View style={style.createLabel()}>
                   <Text>{(titleV) ? '' : 'Title'}</Text>
                 </Animated.View>
-                
+
                 <TextInput
                   placeholder={(keyboardUp) ? '' : 'Tap to create a note!'}
                   style={style.createTitle()}
@@ -148,7 +148,7 @@ module.exports = () => {
                   onChangeText={setTitleV}
                   maxLength={30}
                   returnKeyType='next'
-                  clearButtonMode={'while-editing'}
+                  clearButtonMode='while-editing'
                   onSubmitEditing={() => { textInputRef.current?.focus() }}
                 />
 
@@ -156,7 +156,7 @@ module.exports = () => {
 
             </Animated.View>
 
-            : null}
+            : <></>}
 
           {/* text */}
           {(text) ?
@@ -183,7 +183,7 @@ module.exports = () => {
 
             </Animated.View>
 
-            : null}
+            : <></>}
 
           {/* plus icon */}
           {(plusIcon) ?
@@ -198,7 +198,7 @@ module.exports = () => {
 
             </Animated.View>
 
-            : null}
+            : <></>}
 
         </Animated.View>
 
@@ -245,7 +245,7 @@ module.exports = () => {
 
             </Animated.View>
 
-            : null}
+            : <></>}
 
         </Animated.View>
 

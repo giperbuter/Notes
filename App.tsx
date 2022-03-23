@@ -1,8 +1,10 @@
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView, LogBox } from 'react-native';
 
 let Note = require('./elements/Note.tsx')
 let Background = require('./elements/Background.tsx')
 let Bar = require('./elements/BottomTIs.tsx')
+
+LogBox.ignoreLogs(['Possible Unhandled Promise Rejection'])
 
 // add links
 // add lists

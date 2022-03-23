@@ -27,7 +27,7 @@ class BottomTIs {
       }
     )
   }
-
+  
   container = () => {
     return (
       {
@@ -42,7 +42,7 @@ class BottomTIs {
     )
   }
 
-  leftContainer = () => {
+  leftContainer() {
     return (
       {
         flex: 1,
@@ -79,7 +79,7 @@ class BottomTIs {
     return (
       {
         opacity: this.AN.createOp,
-        ...this.createTextinputCantainer()
+        ...this.createTextinputCantainer(),
       }
     )
   }
