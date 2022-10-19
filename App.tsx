@@ -13,17 +13,17 @@ LogBox.ignoreLogs(['Possible Unhandled Promise Rejection'])
 
 // use only sf symbols for ios
 // ios sheet for long notes
-// alert when no internet for bacjing
+// alert when no internet for backing
 // action sheet when deleting a note
 // ios switchers for dark/light modes
 // for storing online - activity indicators
 // pickers if i add dates and so
-// hust to keep in mind: page controlls
+// must to keep in mind: page controlls
 // notes have styles(bold, this, text color etc.)
 //   creating notes - Edit Menus
 // add haptics
 // context-menu for notes ---
-// quick actions --- 
+// quick actions ---
 // add icon for adding options(add field etc) (an option for now)
 // locket notes with face id / finger(android)
 // dark/light mode

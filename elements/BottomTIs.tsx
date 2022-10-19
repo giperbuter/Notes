@@ -9,11 +9,11 @@ import FinishIcon from './finish-icon.jsx'
 const Styles = require('./Styles.tsx');
 
 // next modification:
-//---add blur to text create
 // add little shadow to title and text (maybe to others too)
-//---put the create shit in order(rearrange and rename)
-//---make styles eith parameters that will handle interpolation(for cleaner code) 
 // get rid of the 'bar' name everywhere
+// edit the finish/search changing animation that they change at start more
+// make title field thiner
+// make an animation when typing in fields so th placeholder move above the TI
 
 const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
 
